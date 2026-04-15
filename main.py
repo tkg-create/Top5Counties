@@ -1,16 +1,44 @@
-# This is a sample Python script.
+import pandas as pd
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+file_path = "qcew_full_report.xlsx"
+
+xls = pd.ExcelFile(file_path)
+
+all_data = []
+
+# Load each county sheet
+for sheet in xls.sheet_names:
+
+    df = pd.read_excel(
+        file_path,
+        sheet_name=sheet,
+        skiprows=7,
+        header=None
+    )
+
+    df["county"] = sheet
+
+    all_data.append(df)
+
+data = pd.concat(all_data, ignore_index=True)
+data = data[data["county"] != "Pennsylvania"]  # Prevent contamination from state-level statistics
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+# Rename columns
+data = data.rename(columns={
+    0: "naics",
+    1: "industry",
+    2: "establishments",
+    3: "employment",
+    4: "wage",
+    5: "employment_change",
+    6: "wage_change",
+    7: "employment_growth",
+    8: "wage_growth"
+})
 
+# Drop junk column
+if 9 in data.columns:
+    data = data.drop(columns=[9])
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+print(data.columns)
