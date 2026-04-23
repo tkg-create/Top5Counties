@@ -5,11 +5,11 @@ app = Flask(__name__)
 # Placeholder
 def get_top_counties(industry):
     dummy_results = {
-        "Technology": ["Allegheny County", "Montgomery County", "Chester County", "Bucks County", "Centre County"],
-        "Healthcare": ["Philadelphia County", "Allegheny County", "Dauphin County", "Lancaster County", "Lehigh County"],
-        "Manufacturing": ["York County", "Berks County", "Erie County", "Westmoreland County", "Luzerne County"]
+        "Technology": [("Allegheny County", 0.95), ("Montgomery County", 0.92), ("Chester County", 0.88), ("Bucks County", 0.85), ("Centre County", 0.82)],
+        "Healthcare": [("Philadelphia County", 0.93), ("Allegheny County", 0.90), ("Dauphin County", 0.87), ("Lancaster County", 0.84), ("Lehigh County", 0.81)],
+        "Manufacturing": [("York County", 0.91), ("Berks County", 0.89), ("Erie County", 0.86), ("Westmoreland County", 0.83), ("Luzerne County", 0.80)]
     }
-    return dummy_results.get(industry, ["No data available"])
+    return dummy_results.get(industry, [("No data available", 0.0)])
 
 
 HTML_PAGE = """
@@ -47,11 +47,12 @@ HTML_PAGE = """
         <h1>Best PA Counties for Job Growth</h1>
         <form method="POST">
             <label>Select Industry:</label><br>
-            <select name="industry">
-                <option value="Technology">Technology</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Manufacturing">Manufacturing</option>
-            </select><br>
+            <input type="text" name="industry" list="industries" placeholder="Type to search industries"><br>
+            <datalist id="industries">
+                <option value="Technology">
+                <option value="Healthcare">
+                <option value="Manufacturing">
+            </datalist><br>
             <button type="submit">Find Top Counties</button>
         </form>
 
@@ -59,8 +60,8 @@ HTML_PAGE = """
         <div class="results">
             <h2>Top 5 Counties:</h2>
             <ol>
-                {% for county in results %}
-                <li>{{ county }}</li>
+                {% for county, score in results %}
+                <li>{{ county }} (Score: {{ "%.2f"|format(score) }})</li>
                 {% endfor %}
             </ol>
         </div>
