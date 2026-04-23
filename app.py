@@ -1,15 +1,15 @@
 from flask import Flask, render_template_string, request
+import main
 
 app = Flask(__name__)
 
-# Placeholder
+# Load data once
+data = main.load_and_process_data()
+industries = main.get_industries(data)
+
+# Placeholder replaced with actual function
 def get_top_counties(industry):
-    dummy_results = {
-        "Technology": [("Allegheny County", 0.95), ("Montgomery County", 0.92), ("Chester County", 0.88), ("Bucks County", 0.85), ("Centre County", 0.82)],
-        "Healthcare": [("Philadelphia County", 0.93), ("Allegheny County", 0.90), ("Dauphin County", 0.87), ("Lancaster County", 0.84), ("Lehigh County", 0.81)],
-        "Manufacturing": [("York County", 0.91), ("Berks County", 0.89), ("Erie County", 0.86), ("Westmoreland County", 0.83), ("Luzerne County", 0.80)]
-    }
-    return dummy_results.get(industry, [("No data available", 0.0)])
+    return main.get_top_counties(data, industry)
 
 
 HTML_PAGE = """
@@ -53,9 +53,9 @@ HTML_PAGE = """
             <label>Select Industry:</label><br>
             <input type="text" name="industry" list="industries" placeholder="Type to search industries"><br>
             <datalist id="industries">
-                <option value="Technology">
-                <option value="Healthcare">
-                <option value="Manufacturing">
+                {% for industry in industries %}
+                <option value="{{ industry }}">
+                {% endfor %}
             </datalist><br>
             <button type="submit">Find Top Counties</button>
         </form>
@@ -108,7 +108,7 @@ def home():
     if request.method == 'POST':
         industry = request.form.get('industry')
         results = get_top_counties(industry)
-    return render_template_string(HTML_PAGE, results=results)
+    return render_template_string(HTML_PAGE, results=results, industries=industries)
 
 
 if __name__ == '__main__':
