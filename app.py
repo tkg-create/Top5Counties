@@ -17,6 +17,7 @@ HTML_PAGE = """
 <html>
 <head>
     <title>Best Counties in PA for Job Growth</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial;
@@ -39,6 +40,9 @@ HTML_PAGE = """
         .results {
             margin-top: 20px;
             text-align: left;
+        }
+        canvas {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -65,6 +69,32 @@ HTML_PAGE = """
                 {% endfor %}
             </ol>
         </div>
+        <canvas id="myChart" width="400" height="200"></canvas>
+        <script>
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var labels = [{% for county, score in results %}"{{ county }}",{% endfor %}];
+            var data = [{% for county, score in results %}{{ score }},{% endfor %}];
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Scores',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
         {% endif %}
     </div>
 </body>
