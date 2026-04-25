@@ -18,85 +18,164 @@ HTML_PAGE = """
 <head>
     <title>Best Counties in PA for Job Growth</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         body {
-            font-family: Arial;
-            background-color: #f4f4f4;
+            font-family: "Georgia", serif;
+            background: url('static/bg.png');
+            background-size: cover;
+            background-position: center 40px;
+            color: #eae0c8;
+            margin: 0;
+            padding: 0;
             text-align: center;
-            padding: 40px;
         }
+
+        header {
+            background: linear-gradient(to right, #3b2f2f, #1b1b1b);
+            color: #d4af37;
+            padding: 25px;
+            border-bottom: 2px solid #d4af37;
+        }
+
         .container {
-            background: white;
+            background-color: #2a2a2a;
+            margin: 40px auto;
             padding: 30px;
+            width: 80%;
+            max-width: 700px;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-            display: inline-block;
+            border: 1px solid #444;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.6);
         }
-        select, button {
+
+        h1, h2 {
+            color: #d4af37;
+        }
+
+        input, select {
             padding: 10px;
             margin: 10px;
-            font-size: 16px;
+            width: 90%;
+            border-radius: 6px;
+            border: 1px solid #555;
+            background-color: #1b1b1b;
+            color: #eae0c8;
         }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-size: 16px;
+            background-color: #d4af37;
+            border: none;
+            border-radius: 6px;
+            color: #1b1b1b;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #b8962e;
+        }
+
         .results {
             margin-top: 20px;
             text-align: left;
         }
+
+        ol {
+            padding-left: 20px;
+        }
+
         canvas {
             margin-top: 20px;
+            background-color: #1b1b1b;
+            padding: 10px;
+            border-radius: 8px;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Best PA Counties for Job Growth</h1>
-        <form method="POST">
-            <label>Select Industry:</label><br>
-            <input type="text" name="industry" list="industries" placeholder="Type to search industries"><br>
-            <datalist id="industries">
-                {% for industry in industries %}
-                <option value="{{ industry }}">
-                {% endfor %}
-            </datalist><br>
-            <button type="submit">Find Top Counties</button>
-        </form>
 
-        {% if results %}
-        <div class="results">
-            <h2>Top 5 Counties:</h2>
-            <ol>
-                {% for county, score in results %}
-                <li>{{ county }} (Score: {{ "%.2f"|format(score) }})</li>
-                {% endfor %}
-            </ol>
-        </div>
-        <canvas id="myChart" width="400" height="200"></canvas>
-        <script>
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var labels = [{% for county, score in results %}"{{ county }}",{% endfor %}];
-            var data = [{% for county, score in results %}{{ score }},{% endfor %}];
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Scores',
-                        data: data,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
+<body>
+
+<header>
+    <h1>Best Counties in Pennsylvania for Job Growth</h1>
+</header>
+
+<div class="container">
+
+    <form method="POST">
+        <label>Select Industry:</label><br>
+        <input type="text" name="industry" list="industries" placeholder="Type to search industries"><br>
+
+        <datalist id="industries">
+            {% for industry in industries %}
+            <option value="{{ industry }}">
+            {% endfor %}
+        </datalist>
+
+        <button type="submit">Find Top Counties</button>
+    </form>
+
+    {% if results %}
+    <div class="results">
+        <h2>Top 5 Counties</h2>
+        <ol>
+            {% for county, score in results %}
+            <li>{{ county }} (Score: {{ "%.2f"|format(score) }})</li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        var labels = [{% for county, score in results %}"{{ county }}",{% endfor %}];
+        var data = [{% for county, score in results %}{{ score }},{% endfor %}];
+
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Growth Score',
+                    data: data,
+                    backgroundColor: 'rgba(212, 175, 55, 0.3)',
+                    borderColor: '#d4af37',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#eae0c8'
+                        }
+                    }
                 },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#eae0c8'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#eae0c8'
                         }
                     }
                 }
-            });
-        </script>
-        {% endif %}
-    </div>
+            }
+        });
+    </script>
+    {% endif %}
+
+</div>
+
 </body>
 </html>
 """
