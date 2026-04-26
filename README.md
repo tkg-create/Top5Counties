@@ -47,4 +47,4 @@ Select an industry from the dropdown, and the app will display the top 5 countie
 
 ## Data Source
 
-The application uses data from the Quarterly Census of Employment and Wages (QCEW) program by the U.S. Bureau of Labor Statistics. The data file `qcew_full_report.xlsx` should be placed in the project root.
+The application uses data from the Quarterly Census of Employment and Wages (QCEW) program by the U.S. Bureau of Labor Statistics.
