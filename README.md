@@ -16,7 +16,7 @@ Top5Counties is a web application that analyzes job growth data for counties in 
 1. Clone the repository:
    ```bash
    git clone https://github.com/tkg-create/Top5Counties.git
-   cd Top5Counties
+   cd Top5Counties-main
    ```
 
 2. Install the required dependencies:
